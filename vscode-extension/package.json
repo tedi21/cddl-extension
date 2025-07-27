@@ -1,0 +1,82 @@
+{
+  "name": "cddl-extension",
+  "displayName": "CDDL Extension",
+  "description": "An extension for the Concise Data Definition Language (CDDL)",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.102.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "cddl"
+  ],
+  "activationEvents": [
+    "onLanguage:cddl"
+  ],
+  "main": "./client/out/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "cddl",
+        "aliases": [
+          "CDDL"
+        ],
+        "extensions": [
+          ".cddl"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "cddl",
+        "scopeName": "source.cddl",
+        "path": "./syntaxes/cddl.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "CDDL configuration",
+      "properties": {}
+    },
+    "commands": [
+      {
+        "command": "cddllsp.generator",
+        "title": "CDDL Generator"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "cddllsp.generator",
+        "key": "alt+d",
+        "mac": "alt+d",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "webpack": "npm run clean && webpack --mode production --config ./client/webpack.config.js && webpack --mode production --config ./server/webpack.config.js",
+    "webpack-dev": "npm run clean && webpack --mode none --config ./client/webpack.config.js && webpack --mode none --config ./server/webpack.config.js",
+    "clean": "rimraf client/out && rimraf server/out",
+    "compile": "tsc -b",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.1.0",
+    "@types/vscode": "^1.102.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1",
+    "merge-options": "^3.0.4",
+    "rimraf": "^6.0.1",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "webpack": "^5.99.6",
+    "webpack-cli": "^6.0.1"
+  }
+}

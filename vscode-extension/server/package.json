@@ -1,0 +1,14 @@
+{
+  "name": "cddl-extension",
+  "displayName": "CDDL Extension",
+  "description": "An extension for the Concise Data Definition Language (CDDL)",
+  "version": "0.0.1",
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12",
+    "vscode-uri": "^3.1.0"
+  }
+}
