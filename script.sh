@@ -37,7 +37,7 @@ cp -rv ../../../../../ruby_sources/ruby/*/* ruby-head-wasm32-unknown-emscripten-
 ./build-package.sh ./ruby-head-wasm32-unknown-emscripten-full
 
 ## test
-cp -rv dist ../../../../../vscode-extension/server/pkg/node_modules/@ruby/head-wasm-emscripten/
+cp -rv dist ../../../../../vscode-extension/server/pkg/
 cd ../../../../../vscode-extension
 npm update
 cd client && npm update

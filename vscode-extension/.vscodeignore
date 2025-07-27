@@ -8,3 +8,8 @@ vsc-extension-quickstart.md
 **/*.map
 **/eslint.config.mjs
 **/.vscode-test.*
+**/src
+**/tsconfig*
+**/webpack.config.js
+**/shared.webpack.config.js
+**/node_modules

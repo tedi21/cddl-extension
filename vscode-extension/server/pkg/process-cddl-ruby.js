@@ -5,7 +5,7 @@ const process = require('node:process');
         const txt = process.argv[3];
         const operation = process.argv[4];
 
-        const { loadRuby } = require("@ruby/head-wasm-emscripten");
+        const { loadRuby } = require(__dirname + "/../pkg/dist/index.js");
 
         var out = "";
         StreamOut = function (txt) {
@@ -48,7 +48,7 @@ const process = require('node:process');
                 //txt = '` + txt.replace(/[']/g, '\\$&').replace(/\.pcre/g, ';$&') + `'
                 //console.log(`$ ruby.wasm ${args.join(" ")}`);
                 const defaultModule = {
-                    locateFile: (path) => __dirname + "/../pkg/node_modules/@ruby/head-wasm-emscripten/dist/" + path,
+                    locateFile: (path) => __dirname + "/../pkg/dist/" + path,
                     setStatus: (msg) => {
                         //console.log("status " + msg);
                     },
