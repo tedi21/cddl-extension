@@ -1,5 +1,4 @@
 ## Source ruby
-#sudo apt-get update
 
 ## Download
 mkdir ruby_sources
@@ -38,7 +37,11 @@ cp -rv ../../../../../ruby_sources/ruby/*/* ruby-head-wasm32-unknown-emscripten-
 ./build-package.sh ./ruby-head-wasm32-unknown-emscripten-full
 
 ## test
-cp -rv dist ../../../../../cddl-extension/server/pkg/node_modules/@ruby/head-wasm-emscripten/
-cd ../../../../../cddl-extension
-#npm run webpack
+cp -rv dist ../../../../../vscode-extension/server/pkg/node_modules/@ruby/head-wasm-emscripten/
+cd ../../../../../vscode-extension
+npm update
+cd client && npm update
+cd ../server && npm update
+cd ..
+npm run webpack
 code .
