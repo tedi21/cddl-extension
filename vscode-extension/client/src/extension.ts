@@ -95,7 +95,7 @@ export function activate(context: ExtensionContext) {
 		let activeDoc = window.activeTextEditor.document;
 		const fsPath = activeDoc.uri.fsPath;
 		const version = activeDoc.version;
-		const uri = Uri.parse('cddllsp:CddlToJson?fsPath=' + fsPath + '&version=' + version);
+		const uri = Uri.parse('cddllsp:CddlToJson.json?fsPath=' + fsPath + '&version=' + version);
 		const doc = await workspace.openTextDocument(uri); // calls back into the provider
 		await window.showTextDocument(doc, { viewColumn: ViewColumn.Beside, preserveFocus: true });
 	}));
