@@ -13,6 +13,11 @@ This VS Code extension provides support for creating and editing [CDDL](https://
 
 ## Release Notes
 
+### 0.0.2
+
+Fixes :
+ - JSON syntax highlighting
+
 ### 0.0.1
 
 Initial release of CDDL-extension
