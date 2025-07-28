@@ -54,12 +54,11 @@ connection.onInitialize((params: InitializeParams) => {
 });
 
 connection.onInitialized(() => {
-	connection.console.log("On Initialized");
-
+	//connection.console.log("On Initialized");
 });
 
 connection.onRequest(GenerateRequest.type, async (params) => {
-  connection.console.log("On Request");
+  //connection.console.log("On Request");
   let doc = documents.get(params.uri);
   if (doc) {
 	let text = doc.getText();
@@ -72,7 +71,7 @@ connection.onRequest(GenerateRequest.type, async (params) => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((change) => {
-	connection.console.log("On Change ");
+	//connection.console.log("On Change ");
 	validateTextDocument(change.document);
 });
 
@@ -85,7 +84,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   const regex = /\*\*\* Parse error at (\d+) upto (\d+) of \d+ \(\d+\)\./g;
   const match = regex.exec(res.output);
   if (match) {
-    console.log(match[1] + '  ' + match[2]);
+    //console.log(match[1] + '  ' + match[2]);
 	let diagnostic: Diagnostic = {
 		severity: DiagnosticSeverity.Error,
 		range: {
@@ -110,7 +109,7 @@ connection.onCompletion(
 	(textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
 		let completionItems: CompletionItem[] = [];
 
-		connection.console.log("On Completion");
+		//connection.console.log("On Completion");
 
 		// Get first two characters at current position
 		let chars = documents.get(textDocumentPosition.textDocument.uri)?.getText({
@@ -158,7 +157,7 @@ connection.onCompletion(
 connection.onCompletionResolve(
 	(item: CompletionItem): CompletionItem => {
 
-		connection.console.log("On Completion Resolve");
+		//connection.console.log("On Completion Resolve");
 
 		if (triggeredOnControl) {
 			for (let index = 0; index < controlOperators.length; index++) {
@@ -182,7 +181,7 @@ connection.onCompletionResolve(
 
 connection.onHover((params: HoverParams): Hover | undefined => {
 
-	connection.console.log("On hover");
+	//connection.console.log("On hover");
 
 	// TODO: If identifier is a single character followed immediately by some
 	// delimiter without any space in between, this sometimes gets tripped up

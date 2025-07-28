@@ -11,7 +11,7 @@
     "url": "https://github.com/tedi21/cddl-extension"
   },
   "engines": {
-    "vscode": "^1.102.0"
+    "vscode": "^1.57.0"
   },
   "categories": [
     "Programming Languages",
@@ -74,7 +74,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.1.0",
-    "@types/vscode": "^1.102.0",
+    "@types/vscode": "^1.57.0",
     "@typescript-eslint/parser": "^8.38.0",
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
