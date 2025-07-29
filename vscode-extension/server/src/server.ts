@@ -23,11 +23,20 @@ import { standardPrelude, controlOperators } from './keywords';
 //import { URI } from 'vscode-uri';
 
 interface GenerateParams {
-	uri: string;
+	cddl: string;
 }
 
 namespace GenerateRequest {
 	export const type = new RequestType<GenerateParams, string, void>('cddllsp.generate');
+}
+
+interface ValidateParams {
+	cddl: string;
+	json: string;
+}
+
+namespace ValidateRequest {
+	export const type = new RequestType<ValidateParams, boolean, void>('cddllsp.validate');
 }
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
@@ -59,13 +68,24 @@ connection.onInitialized(() => {
 
 connection.onRequest(GenerateRequest.type, async (params) => {
   //connection.console.log("On Request");
-  let doc = documents.get(params.uri);
-  if (doc) {
-	let text = doc.getText();
-	const res = await cddl_ruby(cddl_operation.GENERATE, text);
-	return res.output.replace(/\*\*\*[^\n]*\n?/g,'').replace(/\x1B\[0;32;103m%%%\x1B\[0m/g,'BEGIN ERROR>>>').replace(/\x1B\[0;31;103m%%%\x1B\[0m/g,'<<<END ERROR');
+  let cddl = documents.get(params.cddl);
+  if (!cddl) {
+	return "No document found for URI: " + params.cddl;
   }
-  return "No document found for URI: " + params.uri;
+  let text = cddl.getText();
+  const res = await cddl_ruby(cddl_operation.GENERATE, text);
+  return res.output.replace(/\*\*\*[^\n]*\n?/g,'').replace(/\x1B\[0;32;103m%%%\x1B\[0m/g,'BEGIN ERROR>>>').replace(/\x1B\[0;31;103m%%%\x1B\[0m/g,'<<<END ERROR');
+});
+
+connection.onRequest(ValidateRequest.type, async (params) => {
+  let cddl = documents.get(params.cddl);
+  if (!cddl) {
+	return "No document found for URI: " + params.cddl;
+  }
+  let cddlText = cddl.getText();
+  let jsonText = params.json;
+  const res = await cddl_ruby(cddl_operation.VALIDATE, cddlText, jsonText);
+  return /\*\*\* OK/.test(res.output);
 });
 
 // The content of a text document has changed. This event is emitted

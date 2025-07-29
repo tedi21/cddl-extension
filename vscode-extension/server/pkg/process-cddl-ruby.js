@@ -2,20 +2,21 @@ const process = require('node:process');
 
 (async () => {
     if (process.argv[2] === 'child') {
-        const txt = process.argv[3];
-        const operation = process.argv[4];
+        const operation = process.argv[3];
+        const txt = process.argv[4];
+        const json = process.argv[5];
 
         const { loadRuby } = require(__dirname + "/../pkg/dist/index.js");
 
         var out = "";
-        StreamOut = function (txt) {
-            out += txt + '\n';
+        StreamOut = function (str) {
+            out += str + '\n';
             //console.log(txt);
         }
 
         var err = "";
-        StreamError = function (txt) {
-            err += txt + '\n';
+        StreamError = function (str) {
+            err += str + '\n';
             //console.log(txt);
         }
 
@@ -33,6 +34,12 @@ const process = require('node:process');
                     expression += `
                         g = parser.generate
                         puts JSON.pretty_generate(g)
+                    `;
+                }
+                if (operation == 3) {
+                    expression += `
+                        json = JSON.load('` + json.replace(/\r\n/g, ' \n').replace(/['\\]/g, '\\$&') + `')
+                        parser.validate(json)
                     `;
                 }
                 expression += `

@@ -3,16 +3,17 @@ const process = require('node:process');
 
 const cddl_operation = {
     VERIFY: 1,
-    GENERATE: 2
+    GENERATE: 2,
+    VALIDATE: 3,
 };
 
-async function async_cddl_ruby(operation, txt) {
+async function async_cddl_ruby(operation, txt, json) {
     let result = {};
     const waitChild = function () {
         return new Promise((resolve, reject) => {
             const controller = new AbortController();
             const { signal } = controller;
-            const child = fork(__dirname + '/../pkg/process-cddl-ruby.js', ['child', txt, operation], { cwd: './', execArgv: process.execArgv.concat(['--stack-size=9192']), signal });
+            const child = fork(__dirname + '/../pkg/process-cddl-ruby.js', ['child', operation, txt, json], { cwd: './', execArgv: process.execArgv.concat(['--stack-size=9192']), signal });
             child.on('error', (err) => {
                 // This will be called with err being an AbortError if the controller aborts
                 console.log(`child process not launched with err ${err}`);

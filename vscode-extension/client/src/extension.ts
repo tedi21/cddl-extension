@@ -19,11 +19,20 @@ import {
 } from 'vscode-languageclient/node';
 
 interface GenerateParams {
-	uri: string;
+	cddl: string;
 }
 
 namespace GenerateRequest {
 	export const type = new RequestType<GenerateParams, string, void>('cddllsp.generate');
+}
+
+interface ValidateParams {
+	cddl: string;
+	json: string;
+}
+
+namespace ValidateRequest {
+	export const type = new RequestType<ValidateParams, boolean, void>('cddllsp.validate');
 }
 
 let client: LanguageClient;
@@ -58,7 +67,8 @@ export function activate(context: ExtensionContext) {
 	// Options to control the language client
 	let clientOptions: LanguageClientOptions = {
 		// Register the server for plain text documents
-		documentSelector: [{ scheme: 'file', language: 'cddl' }],
+		documentSelector: [
+			{ scheme: 'file', language: 'cddl' }],
 	};
 
 	// Create the language client and start the client.
@@ -84,7 +94,7 @@ export function activate(context: ExtensionContext) {
 			// simply invoke client
 			const queryParams = new URLSearchParams(uri.query);
 			const fsPath = queryParams.get('fsPath');
-			let params: GenerateParams = { uri: client.code2ProtocolConverter.asUri(Uri.file(fsPath)) };
+			let params: GenerateParams = { cddl: client.code2ProtocolConverter.asUri(Uri.file(fsPath)) };
 			return await client.sendRequest(GenerateRequest.type, params);
 		}
 	};
@@ -93,6 +103,10 @@ export function activate(context: ExtensionContext) {
 	// register a command that opens a generated document
 	context.subscriptions.push(commands.registerCommand('cddllsp.generator', async () => {
 		let activeDoc = window.activeTextEditor.document;
+		if (activeDoc.languageId !== 'cddl') {
+			window.showErrorMessage('Active document is not a CDDL file.');
+			return;
+		}
 		const fsPath = activeDoc.uri.fsPath;
 		const version = activeDoc.version;
 		const uri = Uri.parse('cddllsp:CddlToJson.json?fsPath=' + fsPath + '&version=' + version);
@@ -100,6 +114,28 @@ export function activate(context: ExtensionContext) {
 		await window.showTextDocument(doc, { viewColumn: ViewColumn.Beside, preserveFocus: true });
 	}));
 
+	context.subscriptions.push(commands.registerCommand('cddllsp.validator', async () => {
+		let jsonDoc = window.activeTextEditor.document;
+		if (jsonDoc.languageId !== 'json') {
+			window.showErrorMessage('Active document is not a JSON file.');
+			return;
+		}
+		let cddlDoc = window.visibleTextEditors.find(editor => editor.document.languageId === 'cddl');
+		if (!cddlDoc) {
+			window.showErrorMessage('No CDDL document is visible beside to validate against.');
+			return;
+		}
+		let params: ValidateParams = {
+			cddl: client.code2ProtocolConverter.asUri(cddlDoc.document.uri),
+			json: jsonDoc.getText()
+		};
+		const result = await client.sendRequest(ValidateRequest.type, params);
+		if (result) {
+			window.showInformationMessage(jsonDoc.uri.path.split('/').pop() + ' is valid against ' + cddlDoc.document.uri.path.split('/').pop() + '.');
+		} else {
+			window.showErrorMessage(jsonDoc.uri.path.split('/').pop() + ' is NOT valid against ' + cddlDoc.document.uri.path.split('/').pop() + '.');
+		}
+	}));
 }
 
 // This method is called when your extension is deactivated

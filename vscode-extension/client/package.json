@@ -4,7 +4,7 @@
   "description": "An extension for the Concise Data Definition Language (CDDL)",
   "version": "0.0.2",
   "dependencies": {
-    "vscode-languageclient": "^9.0.1"
+    "vscode-languageclient": "^8.1.0"
   },
   "devDependencies": {
     "@types/node": "24.1.0",

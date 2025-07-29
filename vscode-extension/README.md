@@ -4,12 +4,19 @@ This VS Code extension provides support for creating and editing [CDDL](https://
 
 ## Features
 
-- [x] Verify conformance of CDDL documents against RFC 8610
-- [x] Press <kbd>Alt</kbd> + <kbd>D</kbd> to generate dummy JSON from conformant CDDL
 - [x] Syntax highlighting
 - [x] Intellisense
     - Standard prelude
     - Control operators
+- [x] Verify conformance of CDDL documents against RFC 8610
+- [x] Press <kbd>Alt</kbd> + <kbd>d</kbd> to generate dummy JSON from conformant CDDL
+
+    ![markdown demo](images/generate.gif)
+
+- [x] Press <kbd>Alt</kbd> + <kbd>v</kbd> to validate JSON document. JSON document and CDDL document must be visible side by side.
+  
+    ![markdown demo](images/validate.gif)
+
 
 ## Release Notes
 
@@ -17,6 +24,7 @@ This VS Code extension provides support for creating and editing [CDDL](https://
 
 Fixes :
  - JSON syntax highlighting
+ - Add JSON validation
 
 ### 0.0.1
 

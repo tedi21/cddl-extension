@@ -11,7 +11,7 @@
     "url": "https://github.com/tedi21/cddl-extension"
   },
   "engines": {
-    "vscode": "^1.57.0"
+    "vscode": "^1.67.0"
   },
   "categories": [
     "Programming Languages",
@@ -53,6 +53,10 @@
       {
         "command": "cddllsp.generator",
         "title": "CDDL Generator"
+      },
+      {
+        "command": "cddllsp.validator",
+        "title": "CDDL Validator"
       }
     ],
     "keybindings": [
@@ -60,6 +64,12 @@
         "command": "cddllsp.generator",
         "key": "alt+d",
         "mac": "alt+d",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "cddllsp.validator",
+        "key": "alt+v",
+        "mac": "alt+v",
         "when": "editorTextFocus"
       }
     ]

@@ -6,6 +6,7 @@ All notable changes to the "cddl-extension" extension will be documented in this
 
 Fixes :
  - JSON syntax highlighting
+ - Add JSON validation
 
 ## [0.0.1]
 
