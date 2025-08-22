@@ -10,10 +10,9 @@ let RubyVM;
 let out = "";
 let err = "";
 let inProgress = false;
-
-function sleep(delay) {
-  return new Promise((resolve) => setTimeout(resolve, delay));
-}
+let waitingTask = {
+    state: false
+};
 
 async function cddl_init() {
     const createModule = __non_webpack_require__(__dirname + "/../pkg/dist/ruby.js");
@@ -48,50 +47,58 @@ async function cddl_init() {
     }
 }
 
+async function cddl_eval(operation, txt, json) {
+    try {
+        if (RubyVM === undefined) {
+            await cddl_init();
+        }
+        var expression = `
+            begin 
+                cddlTxt = <<-EOF\n` + txt.replace(/\r\n/g, ' \n').replace(/[\\]/g, '\\$&') + `\nEOF
+                parser ||= CDDL::Parser.new(cddlTxt)
+        `;
+        if (operation == 2) {
+            expression += `
+                g = parser.generate
+                puts JSON.pretty_generate(g)
+            `;
+        }
+        if (operation == 3) {
+            expression += `
+                jsonTxt = <<-EOF\n` + json.replace(/\r\n/g, ' \n').replace(/[\\]/g, '\\$&') + `\nEOF
+                json = JSON.load(jsonTxt)
+                parser.validate(json)
+            `;
+        }
+        expression += `
+            rescue => error
+                warn error.message
+            else
+                puts '*** OK'
+            end
+        `;
+        out = "";
+        err = "";
+        await RubyVM.eval(expression);
+    } catch (error) {
+        //console.error(error);
+    }
+}
+
 async function cddl_ruby(operation, txt, json) {
+    waitingTask = {
+        operation: operation,
+        txt: txt,
+        json: json,
+        state: true
+    };    
     if (!inProgress) {
         inProgress = true;
-
-        try {
-            if (RubyVM === undefined) {
-                await cddl_init();
-            }
-            var expression = `
-                begin 
-                    cddlTxt = <<-EOF\n` + txt.replace(/\r\n/g, ' \n').replace(/[\\]/g, '\\$&') + `\nEOF
-                    parser ||= CDDL::Parser.new(cddlTxt)
-            `;
-            if (operation == 2) {
-                expression += `
-                    g = parser.generate
-                    puts JSON.pretty_generate(g)
-                `;
-            }
-            if (operation == 3) {
-                expression += `
-                    jsonTxt = <<-EOF\n` + json.replace(/\r\n/g, ' \n').replace(/[\\]/g, '\\$&') + `\nEOF
-                    json = JSON.load(jsonTxt)
-                    parser.validate(json)
-                `;
-            }
-            expression += `
-                rescue => error
-                    warn error.message
-                else
-                    puts '*** OK'
-                end
-            `;
-            out = "";
-            err = "";
-            await RubyVM.eval(expression);
-        } catch (error) {
-            //console.error(error);
+        while (waitingTask.state) {
+            waitingTask.state = false;
+            await cddl_eval(waitingTask.operation, waitingTask.txt, waitingTask.json);
         }
         inProgress = false;
-    }
-    else {
-        await sleep(10);
-        cddl_ruby(operation, txt, json);
     }
     return {
         result: (out.length != 0), 

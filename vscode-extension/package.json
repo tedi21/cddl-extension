@@ -4,7 +4,7 @@
   "description": "An extension for the Concise Data Definition Language (CDDL)",
   "author": "Teddy Didé",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "tedi21",
   "repository": {
     "type": "git",

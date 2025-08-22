@@ -2,6 +2,12 @@
 
 All notable changes to the "cddl-extension" extension will be documented in this file.
 
+
+## [0.0.4]
+
+Fixes :
+ - Remove recursive evaluation
+
 ## [0.0.3]
 
 Fixes :

@@ -13,3 +13,4 @@ vsc-extension-quickstart.md
 **/webpack.config.js
 **/shared.webpack.config.js
 **/node_modules
+**/images
