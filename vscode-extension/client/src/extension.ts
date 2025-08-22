@@ -85,7 +85,6 @@ export function activate(context: ExtensionContext) {
 	// register a content provider for the cddlGenerator-scheme
 	const cddlGeneratorScheme = 'cddllsp';
 	const cddlGeneratorProvider = new class implements TextDocumentContentProvider {
-
 		// emitter and its event
 		onDidChangeEmitter = new EventEmitter<Uri>();
 		onDidChange = this.onDidChangeEmitter.event;

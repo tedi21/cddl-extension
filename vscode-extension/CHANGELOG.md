@@ -5,7 +5,7 @@ All notable changes to the "cddl-extension" extension will be documented in this
 ## [0.0.3]
 
 Fixes :
- - Remove process fork
+ - Remove process fork and add a lazy loading
 
 ## [0.0.2]
 

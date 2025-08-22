@@ -18,7 +18,7 @@ import {
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
-import { cddl_ruby, cddl_operation } from '../pkg/async-cddl-ruby';
+import { cddl_ruby, cddl_operation } from '../pkg/cddl-ruby';
 import { standardPrelude, controlOperators } from './keywords';
 //import { URI } from 'vscode-uri';
 
@@ -91,7 +91,6 @@ connection.onRequest(ValidateRequest.type, async (params) => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((change) => {
-	//connection.console.log("On Change ");
 	validateTextDocument(change.document);
 });
 
@@ -104,7 +103,6 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   const regex = /\*\*\* Parse error at (\d+) upto (\d+) of \d+ \(\d+\)\./g;
   const match = regex.exec(res.output);
   if (match) {
-    //console.log(match[1] + '  ' + match[2]);
 	let diagnostic: Diagnostic = {
 		severity: DiagnosticSeverity.Error,
 		range: {

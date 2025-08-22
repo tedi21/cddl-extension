@@ -20,18 +20,5 @@ This VS Code extension provides support for creating and editing [CDDL](https://
 
 ## Release Notes
 
-### 0.0.3
-
-Fixes :
- - Remove process fork
-
-### 0.0.2
-
-Fixes :
- - JSON syntax highlighting
- - Add JSON validation
-
-### 0.0.1
-
-Initial release of CDDL-extension
+see [CHANGELOG](CHANGELOG.md).
 
