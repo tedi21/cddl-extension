@@ -67,25 +67,25 @@ connection.onInitialized(() => {
 });
 
 connection.onRequest(GenerateRequest.type, async (params) => {
-  //connection.console.log("On Request");
-  let cddl = documents.get(params.cddl);
-  if (!cddl) {
-	return "No document found for URI: " + params.cddl;
-  }
-  let text = cddl.getText();
-  const res = await cddl_ruby(cddl_operation.GENERATE, text);
-  return res.output.replace(/\*\*\*[^\n]*\n?/g,'').replace(/\x1B\[0;32;103m%%%\x1B\[0m/g,'BEGIN ERROR>>>').replace(/\x1B\[0;31;103m%%%\x1B\[0m/g,'<<<END ERROR');
+	//connection.console.log("On Request");
+	let cddl = documents.get(params.cddl);
+	if (!cddl) {
+		return "No document found for URI: " + params.cddl;
+	}
+	let text = cddl.getText();
+	const res = await cddl_ruby(cddl_operation.GENERATE, text);
+	return res.output.replace(/\*\*\*[^\n]*\n?/g, '').replace(/\x1B\[0;32;103m%%%\x1B\[0m/g, 'BEGIN ERROR>>>').replace(/\x1B\[0;31;103m%%%\x1B\[0m/g, '<<<END ERROR');
 });
 
 connection.onRequest(ValidateRequest.type, async (params) => {
-  let cddl = documents.get(params.cddl);
-  if (!cddl) {
-	return "No document found for URI: " + params.cddl;
-  }
-  let cddlText = cddl.getText();
-  let jsonText = params.json;
-  const res = await cddl_ruby(cddl_operation.VALIDATE, cddlText, jsonText);
-  return /\*\*\* OK/.test(res.output);
+	let cddl = documents.get(params.cddl);
+	if (!cddl) {
+		return "No document found for URI: " + params.cddl;
+	}
+	let cddlText = cddl.getText();
+	let jsonText = params.json;
+	const res = await cddl_ruby(cddl_operation.VALIDATE, cddlText, jsonText);
+	return /\*\*\* OK/.test(res.output);
 });
 
 // The content of a text document has changed. This event is emitted
@@ -95,26 +95,26 @@ documents.onDidChangeContent((change) => {
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-  // The validator creates diagnostics for all uppercase words length 2 and more
-  let text = textDocument.getText();
-  let diagnostics: Diagnostic[] = [];
+	// The validator creates diagnostics for all uppercase words length 2 and more
+	let text = textDocument.getText();
+	let diagnostics: Diagnostic[] = [];
 
-  const res = await cddl_ruby(cddl_operation.VERIFY, text);
-  const regex = /\*\*\* Parse error at (\d+) upto (\d+) of \d+ \(\d+\)\./g;
-  const match = regex.exec(res.output);
-  if (match) {
-	let diagnostic: Diagnostic = {
-		severity: DiagnosticSeverity.Error,
-		range: {
-			start: textDocument.positionAt(parseInt(match[1])),
-			end: textDocument.positionAt(parseInt(match[2])),
-		},
-		message: 'syntax error',
-		source: 'cddl',
-	};
+	const res = await cddl_ruby(cddl_operation.VERIFY, text);
+	const regex = /\*\*\* Parse error at (\d+) upto (\d+) of \d+ \(\d+\)\./g;
+	const match = regex.exec(res.output);
+	if (match) {
+		let diagnostic: Diagnostic = {
+			severity: DiagnosticSeverity.Error,
+			range: {
+				start: textDocument.positionAt(parseInt(match[1])),
+				end: textDocument.positionAt(parseInt(match[2])),
+			},
+			message: 'syntax error',
+			source: 'cddl',
+		};
 
-	diagnostics.push(diagnostic);
-  }
+		diagnostics.push(diagnostic);
+	}
 
 	// Send the computed diagnostics to VSCode.
 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });

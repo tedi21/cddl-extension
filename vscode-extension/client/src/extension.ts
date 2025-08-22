@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { 
+import {
 	ExtensionContext,
 	TextDocumentContentProvider,
 	EventEmitter,
@@ -8,7 +8,7 @@ import {
 	window,
 	commands,
 	ViewColumn,
- } from 'vscode';
+} from 'vscode';
 
 import {
 	LanguageClient,
@@ -44,7 +44,7 @@ let client: LanguageClient;
  * @param {vscode.ExtensionContext} context
  */
 export function activate(context: ExtensionContext) {
-	
+
 	// The server is implemented in node
 	let serverModule = context.asAbsolutePath(
 		path.join('server', 'out', 'server.js')
@@ -81,7 +81,7 @@ export function activate(context: ExtensionContext) {
 
 	// Start the client. This will also launch the server
 	client.start();
-  
+
 	// register a content provider for the cddlGenerator-scheme
 	const cddlGeneratorScheme = 'cddllsp';
 	const cddlGeneratorProvider = new class implements TextDocumentContentProvider {

@@ -91,7 +91,7 @@ async function cddl_ruby(operation, txt, json) {
         txt: txt,
         json: json,
         state: true
-    };    
+    };
     if (!inProgress) {
         inProgress = true;
         while (waitingTask.state) {
@@ -101,7 +101,7 @@ async function cddl_ruby(operation, txt, json) {
         inProgress = false;
     }
     return {
-        result: (out.length != 0), 
+        result: (out.length != 0),
         output: out.trim() + '\n' + err.trim()
     };
 }
