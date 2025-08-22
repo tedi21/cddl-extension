@@ -3,7 +3,7 @@ CXXFLAGS=-O3
 CC=emcc
 CCFLAGS=-O3
 LDFLAGS=-O3 -sEXIT_RUNTIME=0 -sINVOKE_RUN=0 -sMODULARIZE=1 -sALLOW_MEMORY_GROWTH=1 -s'EXPORT_NAME="createModule"' -sFORCE_FILESYSTEM=1 -sASYNCIFY -sSTACK_SIZE=10MB -sASYNCIFY_STACK_SIZE=10MB 
-RUBY_ROOT_BUILD=./ruby_wasm/ruby.wasm/build/wasm32-unknown-emscripten
+RUBY_ROOT_BUILD=./ruby.wasm/build/wasm32-unknown-emscripten
 RUBY_BUILD=$(RUBY_ROOT_BUILD)/ruby-head-wasm32-unknown-emscripten-full
 RUBY_HEADERS=ruby-head-wasm32-unknown-emscripten-full/usr/local/include/ruby-3.5.0+3
 RUBY_INCLUDE=-I$(RUBY_HEADERS)/wasm32-emscripten -I$(RUBY_HEADERS)

@@ -19,18 +19,16 @@ source ./emsdk_env.sh
 cd ..
 
 ## ruby wasm
-mkdir ruby_wasm
-cd ruby_wasm
 git clone https://github.com/ruby/ruby.wasm.git
 cd ruby.wasm
 ./bin/setup
 bundle exec rake compile
 rake --tasks
 rake build:head-wasm32-unknown-emscripten-full
+cd ..
 
 # build
-cd ../..
-cp -rv ruby_wasm/ruby.wasm/rubies/ruby-head-wasm32-unknown-emscripten-full ./
+cp -rv ruby.wasm/rubies/ruby-head-wasm32-unknown-emscripten-full ./
 cp -rv ruby_sources/ruby/*/* ruby-head-wasm32-unknown-emscripten-full/usr/local/lib/ruby/gems/*/
 make
 cp -rv dist vscode-extension/server/pkg/
