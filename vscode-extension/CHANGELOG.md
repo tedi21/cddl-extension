@@ -2,6 +2,10 @@
 
 All notable changes to the "cddl-extension" extension will be documented in this file.
 
+## [0.0.5]
+
+Fixes :
+ - Force stack size
 
 ## [0.0.4]
 
