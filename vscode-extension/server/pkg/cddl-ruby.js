@@ -54,7 +54,7 @@ async function cddl_eval(operation, txt, json) {
         }
         var expression = `
             begin 
-                cddlTxt = <<-'EOF'\n` + txt.replace(/\r\n/g, ' \n').replace(/[\\]/g, '\\$&') + `\nEOF
+                cddlTxt = <<-'EOF'\n` + txt.replace(/\r\n/g, ' \n') + `\nEOF
                 parser ||= CDDL::Parser.new(cddlTxt)
         `;
         if (operation == 2) {
@@ -65,7 +65,7 @@ async function cddl_eval(operation, txt, json) {
         }
         if (operation == 3) {
             expression += `
-                jsonTxt = <<-'EOF'\n` + json.replace(/\r\n/g, ' \n').replace(/[\\]/g, '\\$&') + `\nEOF
+                jsonTxt = <<-'EOF'\n` + json.replace(/\r\n/g, ' \n') + `\nEOF
                 json = JSON.load(jsonTxt)
                 parser.validate(json)
             `;
