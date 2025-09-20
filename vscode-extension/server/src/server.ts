@@ -26,8 +26,13 @@ interface GenerateParams {
 	cddl: string;
 }
 
+interface GenerateResult {
+	result: number,
+	json: string
+}
+
 namespace GenerateRequest {
-	export const type = new RequestType<GenerateParams, string, void>('cddllsp.generate');
+	export const type = new RequestType<GenerateParams, GenerateResult, void>('cddllsp.generate');
 }
 
 interface ValidateParams {
@@ -35,8 +40,13 @@ interface ValidateParams {
 	json: string;
 }
 
+interface ValidateResult {
+	result: number,
+	validity: boolean
+}
+
 namespace ValidateRequest {
-	export const type = new RequestType<ValidateParams, boolean, void>('cddllsp.validate');
+	export const type = new RequestType<ValidateParams, ValidateResult, void>('cddllsp.validate');
 }
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
@@ -74,7 +84,10 @@ connection.onRequest(GenerateRequest.type, async (params) => {
 	}
 	let text = cddl.getText();
 	const res = await cddl_ruby(cddl_operation.GENERATE, text);
-	return res.output.replace(/\*\*\*[^\n]*\n?/g, '').replace(/\x1B\[0;32;103m%%%\x1B\[0m/g, 'BEGIN ERROR>>>').replace(/\x1B\[0;31;103m%%%\x1B\[0m/g, '<<<END ERROR');
+	return { 
+		result: res.result, 
+		json: res.output.replace(/\*\*\*[^\n]*\n?/g, '').replace(/\x1B\[0;32;103m%%%\x1B\[0m/g, 'BEGIN ERROR>>>').replace(/\x1B\[0;31;103m%%%\x1B\[0m/g, '<<<END ERROR')
+	};
 });
 
 connection.onRequest(ValidateRequest.type, async (params) => {
@@ -85,7 +98,10 @@ connection.onRequest(ValidateRequest.type, async (params) => {
 	let cddlText = cddl.getText();
 	let jsonText = params.json;
 	const res = await cddl_ruby(cddl_operation.VALIDATE, cddlText, jsonText);
-	return /\*\*\* OK/.test(res.output);
+	return { 
+		result: res.result, 
+		validity: /\*\*\* OK/.test(res.output)
+	};
 });
 
 // The content of a text document has changed. This event is emitted
@@ -100,20 +116,21 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 	let diagnostics: Diagnostic[] = [];
 
 	const res = await cddl_ruby(cddl_operation.VERIFY, text);
-	const regex = /\*\*\* Parse error at (\d+) upto (\d+) of \d+ \(\d+\)\./g;
-	const match = regex.exec(res.output);
-	if (match) {
-		let diagnostic: Diagnostic = {
-			severity: DiagnosticSeverity.Error,
-			range: {
-				start: textDocument.positionAt(parseInt(match[1])),
-				end: textDocument.positionAt(parseInt(match[2])),
-			},
-			message: 'syntax error',
-			source: 'cddl',
-		};
-
-		diagnostics.push(diagnostic);
+	if (res.result === 1) {
+		const regex = /\*\*\* Parse error at (\d+) upto (\d+) of \d+ \(\d+\)\./g;
+		const match = regex.exec(res.output);
+		if (match) {
+			let diagnostic: Diagnostic = {
+				severity: DiagnosticSeverity.Error,
+				range: {
+					start: textDocument.positionAt(parseInt(match[1])),
+					end: textDocument.positionAt(parseInt(match[2])),
+				},
+				message: 'syntax error',
+				source: 'cddl',
+			};
+			diagnostics.push(diagnostic);
+		}
 	}
 
 	// Send the computed diagnostics to VSCode.

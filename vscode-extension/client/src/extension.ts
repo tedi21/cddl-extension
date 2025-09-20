@@ -22,8 +22,13 @@ interface GenerateParams {
 	cddl: string;
 }
 
+interface GenerateResult {
+	result: number,
+	json: string
+}
+
 namespace GenerateRequest {
-	export const type = new RequestType<GenerateParams, string, void>('cddllsp.generate');
+	export const type = new RequestType<GenerateParams, GenerateResult, void>('cddllsp.generate');
 }
 
 interface ValidateParams {
@@ -31,8 +36,13 @@ interface ValidateParams {
 	json: string;
 }
 
+interface ValidateResult {
+	result: number,
+	validity: boolean
+}
+
 namespace ValidateRequest {
-	export const type = new RequestType<ValidateParams, boolean, void>('cddllsp.validate');
+	export const type = new RequestType<ValidateParams, ValidateResult, void>('cddllsp.validate');
 }
 
 let client: LanguageClient;
@@ -100,7 +110,11 @@ export function activate(context: ExtensionContext) {
 			const queryParams = new URLSearchParams(uri.query);
 			const fsPath = queryParams.get('fsPath');
 			let params: GenerateParams = { cddl: client.code2ProtocolConverter.asUri(Uri.file(fsPath)) };
-			return await client.sendRequest(GenerateRequest.type, params);
+			const res: GenerateResult = await client.sendRequest(GenerateRequest.type, params);
+			if (res.result !== 2) {
+				return res.json;
+			}
+			return '';
 		}
 	};
 	context.subscriptions.push(workspace.registerTextDocumentContentProvider(cddlGeneratorScheme, cddlGeneratorProvider));
@@ -134,11 +148,13 @@ export function activate(context: ExtensionContext) {
 			cddl: client.code2ProtocolConverter.asUri(cddlDoc.document.uri),
 			json: jsonDoc.getText()
 		};
-		const result = await client.sendRequest(ValidateRequest.type, params);
-		if (result) {
-			window.showInformationMessage(jsonDoc.uri.path.split('/').pop() + ' is valid against ' + cddlDoc.document.uri.path.split('/').pop() + '.');
-		} else {
-			window.showErrorMessage(jsonDoc.uri.path.split('/').pop() + ' is NOT valid against ' + cddlDoc.document.uri.path.split('/').pop() + '.');
+		const res: ValidateResult = await client.sendRequest(ValidateRequest.type, params);
+		if (res.result !== 2) {
+			if (res.validity) {
+				window.showInformationMessage(jsonDoc.uri.path.split('/').pop() + ' is valid against ' + cddlDoc.document.uri.path.split('/').pop() + '.');
+			} else {
+				window.showErrorMessage(jsonDoc.uri.path.split('/').pop() + ' is NOT valid against ' + cddlDoc.document.uri.path.split('/').pop() + '.');
+			}
 		}
 	}));
 }
